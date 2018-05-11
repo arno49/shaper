@@ -23,24 +23,27 @@
         TBD
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
-import ConfigParser
 import fnmatch
 import os
-import StringIO
 import sys
+
+from collections import OrderedDict
+from io import StringIO
 
 import yaml
 
+try:
+    UNICODE_EXISTS = bool(type(unicode))
+except NameError:
+    unicode = lambda s: str(s)
 
 try:
-        # for python newer than 2.7
-    from collections import OrderedDict
-except ImportError:
-        # use backport from pypi
-    from ordereddict import OrderedDict
+    import ConfigParser
+except:
+    import configparser as ConfigParser
 
 
 # try to use LibYAML bindings if possible
@@ -54,7 +57,7 @@ _mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
 
 def dict_representer(dumper, data):
-    return dumper.represent_dict(data.iteritems())
+    return dumper.represent_dict(data.items())
 
 
 def dict_constructor(loader, node):
@@ -68,10 +71,13 @@ Dumper.add_representer(
     SafeRepresenter.represent_str
 )
 
-Dumper.add_representer(
-    unicode,
-    SafeRepresenter.represent_unicode
-)
+try:
+    Dumper.add_representer(
+        unicode,
+        SafeRepresenter.represent_unicode
+    )
+except:
+    pass
 
 
 class JavaPropertiesParser(object):
@@ -150,9 +156,9 @@ class JavaPropertiesParser(object):
         """read ini properties"""
         with open(path_to_file, 'rb') as properties_file:
 
-            config = StringIO.StringIO()
-            config.write('[dummy_section]\n')
-            config.write(properties_file.read().replace('%', '%%'))
+            config = StringIO()
+            config.write(u'[dummy_section]\n')
+            config.write(properties_file.read().decode().replace('%', '%%'))
             config.seek(0, os.SEEK_SET)
 
             conf_parser = ConfigParser.SafeConfigParser()
@@ -177,9 +183,9 @@ class JavaPropertiesParser(object):
     def write_properties_file(path_to_file, datastructure):
         """write kv ini like style"""
         with open(path_to_file, "wb") as properties_file:
-            for key, value in datastructure.iteritems():
+            for key, value in datastructure.items():
                 properties_file.write(
-                    "{}={}\n".format(key, value)
+                    "{}={}\n".format(key, value).encode()
                 )
 
     @staticmethod
@@ -196,7 +202,7 @@ class JavaPropertiesParser(object):
     @staticmethod
     def write_properties(datastructure, out_path):
         """interface for recursive write properties"""
-        for filename, properties in datastructure.iteritems():
+        for filename, properties in datastructure.items():
             directories = os.path.join(
                 out_path,
                 os.path.dirname(filename)
@@ -344,7 +350,7 @@ def main():
         if arguments.key:
             datastructure = OrderedDict(
                 (key, value)
-                for key, value in datastructure.iteritems()
+                for key, value in datastructure.items()
                 if arguments.key in key
             )
 
