@@ -266,6 +266,14 @@ def parse_arguments():
         description='Tool to manage java properties'
     )
 
+    parser.add_argument(
+        "-v",
+        dest="logging",
+        action="count",
+        default=0,
+        help="Verbose output"
+    )
+
     subparsers = parser.add_subparsers(
         dest="parser"
     )
@@ -308,6 +316,14 @@ def parse_arguments():
         help='Path to output directory. Default ./out/',
     )
 
+    write.add_argument(
+        '-k',
+        '--key',
+        dest='key',
+        default=None,
+        help='Key for rendering custom subtree. Default render from root',
+    )
+
     return parser.parse_args()
 
 
@@ -323,6 +339,17 @@ def main():
     elif arguments.parser == "write":
         yaml_data = jom.read_yaml(arguments.src_structure)
         datastructure = jom.backward_path_parser(yaml_data)
+
+        # filter render files by key
+        if arguments.key:
+            datastructure = OrderedDict(
+                (key, value) for key, value in datastructure.iteritems() if arguments.key in key
+            )
+
+        if arguments.logging:
+            print("==> Files to render :")
+            print('\n'.join(datastructure.keys()))
+
         jom.write_properties(datastructure, arguments.out)
 
     else:
