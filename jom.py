@@ -343,7 +343,9 @@ def main():
         # filter render files by key
         if arguments.key:
             datastructure = OrderedDict(
-                (key, value) for key, value in datastructure.iteritems() if arguments.key in key
+                (key, value)
+                for key, value in datastructure.iteritems()
+                if arguments.key in key
             )
 
         if arguments.logging:
