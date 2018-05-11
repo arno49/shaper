@@ -31,9 +31,47 @@ import fnmatch
 import os
 import StringIO
 import sys
-from collections import OrderedDict
 
 import yaml
+
+
+try:
+        # for python newer than 2.7
+    from collections import OrderedDict
+except ImportError:
+        # use backport from pypi
+    from ordereddict import OrderedDict
+
+
+# try to use LibYAML bindings if possible
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
+from yaml.representer import SafeRepresenter
+_mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+
+
+def dict_representer(dumper, data):
+    return dumper.represent_dict(data.iteritems())
+
+
+def dict_constructor(loader, node):
+    return OrderedDict(loader.construct_pairs(node))
+
+
+Dumper.add_representer(OrderedDict, dict_representer)
+Loader.add_constructor(_mapping_tag, dict_constructor)
+Dumper.add_representer(
+    str,
+    SafeRepresenter.represent_str
+)
+
+Dumper.add_representer(
+    unicode,
+    SafeRepresenter.represent_unicode
+)
 
 
 class JavaPropertiesParser(object):
@@ -58,6 +96,7 @@ class JavaPropertiesParser(object):
                 yaml.dump(
                     data,
                     outfile,
+                    Dumper=Dumper,
                     default_flow_style=False,
                     allow_unicode=True,
                 )
@@ -81,7 +120,7 @@ class JavaPropertiesParser(object):
             with open(path_to_file, 'r') as _fp:
                 return yaml.load(
                     _fp,
-                    # object_pairs_hook=OrderedDict
+                    Loader=Loader,
                 )
 
         except ValueError as error:
@@ -119,7 +158,7 @@ class JavaPropertiesParser(object):
             conf_parser = ConfigParser.SafeConfigParser()
             conf_parser.readfp(config)
 
-            return dict(conf_parser.items('dummy_section'))
+            return OrderedDict(conf_parser.items('dummy_section'))
 
     @staticmethod
     def read_properties(path_to_dir):
@@ -148,7 +187,7 @@ class JavaPropertiesParser(object):
         """recursive creating folders"""
         try:
             os.makedirs(path_to_folder)
-        except OSError as exc:
+        except OSError:
             if os.path.isdir(path_to_folder):
                 pass
             else:
