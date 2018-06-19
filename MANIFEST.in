@@ -1,0 +1,4 @@
+include README.md
+include shaper/_version.py
+recursive-include requirements/*
+include versioneer.py

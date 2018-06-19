@@ -297,6 +297,11 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def play():
+    """interface mock"""
+    pass
+
+
 def main():
     """main"""
     arguments = parse_arguments()
