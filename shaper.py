@@ -46,7 +46,7 @@ except:
     import configparser as ConfigParser
 
 
-class JavaPropertiesParser(object):
+class Shaper(object):
     """Java options manager tool"""
 
     @staticmethod
@@ -134,11 +134,11 @@ class JavaPropertiesParser(object):
     def read_properties(path_to_dir):
         """interface for recursive read properties"""
         data = {}
-        files = JavaPropertiesParser.walk_on_path(path_to_dir)
+        files = Shaper.walk_on_path(path_to_dir)
 
         for filename in files:
             data.update({
-                filename: JavaPropertiesParser.read_properties_file(filename)
+                filename: Shaper.read_properties_file(filename)
             })
 
         return data
@@ -172,8 +172,8 @@ class JavaPropertiesParser(object):
                 os.path.dirname(filename)
             )
             property_file = os.path.basename(filename)
-            JavaPropertiesParser.create_folders(directories)
-            JavaPropertiesParser.write_properties_file(
+            Shaper.create_folders(directories)
+            Shaper.write_properties_file(
                 os.path.join(
                     directories,
                     property_file
@@ -300,15 +300,15 @@ def parse_arguments():
 def main():
     """main"""
     arguments = parse_arguments()
-    jom = JavaPropertiesParser()
+    shaper = Shaper()
 
     if arguments.parser == "read":
-        tree = jom.forward_path_parser(jom.read_properties(arguments.src_path))
-        jom.dump_yaml(tree, arguments.out)
+        tree = shaper.forward_path_parser(shaper.read_properties(arguments.src_path))
+        shaper.dump_yaml(tree, arguments.out)
 
     elif arguments.parser == "write":
-        yaml_data = jom.read_yaml(arguments.src_structure)
-        datastructure = jom.backward_path_parser(yaml_data)
+        yaml_data = shaper.read_yaml(arguments.src_structure)
+        datastructure = shaper.backward_path_parser(yaml_data)
 
         # filter render files by key
         if arguments.key:
@@ -322,7 +322,7 @@ def main():
             print("==> Files to render :")
             print('\n'.join(datastructure.keys()))
 
-        jom.write_properties(datastructure, arguments.out)
+        shaper.write_properties(datastructure, arguments.out)
 
     else:
         raise NotImplementedError
