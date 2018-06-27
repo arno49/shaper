@@ -56,8 +56,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'shaper = shaper.cli:main',
-            'shaper-play = shaper.cli:play',
+            'shaper = shaper.cli:main'
         ]
     },
     extras_require={
