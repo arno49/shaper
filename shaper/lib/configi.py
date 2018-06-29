@@ -81,10 +81,9 @@ def write_plain_text(path_to_file, content):
             _fd.write(content)
 
     except (ValueError, OSError, IOError) as error:
-        sys.stderr.write("Failed to write file {0}: {1}".format(
-            path_to_file,
-            error
-        ))
+        sys.stderr.write(
+            "Failed to write file {0}: {1}".format(path_to_file, error),
+        )
 
 
 def read_yaml(path_to_file):
@@ -117,10 +116,7 @@ def write_yaml(path_to_file, data):
         allow_unicode=True,
     )
 
-    write_plain_text(
-        path_to_file,
-        content
-    )
+    write_plain_text(path_to_file, content)
 
 
 def read_json(path_to_file):
@@ -131,7 +127,7 @@ def read_json(path_to_file):
     :return: json datastructure
     :rtype: dict
     """
-    return json.loads(read_plain_text(path_to_file))
+    return json.load(path_to_file)
 
 
 def write_json(path_to_file, data):
@@ -147,19 +143,12 @@ def write_json(path_to_file, data):
     :rtype: None
 
     """
-    content = json.dumps(
+    json.dump(
         data,
-        indent=4,
-        separators=(
-            ',',
-            ': '
-        ),
-        encoding="utf-8"
-    )
-
-    write_plain_text(
         path_to_file,
-        content
+        indent=4,
+        separators=(',', ': '),
+        encoding="utf-8"
     )
 
 
@@ -291,7 +280,7 @@ def read(path_to_file, file_type="auto"):
     if file_type == "auto":
         parser = type_choise(path_to_file)[0]
     else:
-        parser = FILE_TYPES.get(file_type, None)
+        parser = FILE_TYPES.get(file_type)
 
     return parser(path_to_file)
 
@@ -316,6 +305,6 @@ def write(path_to_file, data, file_type="auto"):
     if file_type == "auto":
         parser = type_choise(path_to_file)[1]
     else:
-        parser = FILE_TYPES.get(file_type, None)
+        parser = FILE_TYPES.get(file_type)
 
     return parser(path_to_file, data)

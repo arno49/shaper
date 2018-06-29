@@ -13,26 +13,17 @@ from shaper.lib.configi import FILE_TYPES
 
 def walk_on_path(path):
     """recursive find files with pattern"""
-    matches = []
-    for pattern, _ in FILE_TYPES.items():
-        for root, _dirnames, files in os.walk(path):
+    for root, _dirnames, files in os.walk(path):
+        for pattern in FILE_TYPES:
             for filename in fnmatch.filter(files, '*{}'.format(pattern)):
-                matches.append(os.path.join(root, filename))
-
-    return matches
+                yield os.path.join(root, filename)
 
 
 def read_properties(path_to_dir):
     """interface for recursive read properties"""
-    data = {}
-    files = walk_on_path(path_to_dir)
-
-    for filename in files:
-        data.update({
-            filename: lib.read(filename)
-        })
-
-    return data
+    return {
+        filename: lib.read(filename) for filename in walk_on_path(path_to_dir)
+    }
 
 
 def create_folders(path_to_folder):
@@ -40,9 +31,7 @@ def create_folders(path_to_folder):
     try:
         os.makedirs(path_to_folder)
     except OSError:
-        if os.path.isdir(path_to_folder):
-            pass
-        else:
+        if not os.path.isdir(path_to_folder):
             raise EOFError
 
 
@@ -53,19 +42,21 @@ def write_properties(datastructure, out_path):
             out_path,
             os.path.dirname(filename)
         )
-        property_file = os.path.basename(filename)
         create_folders(directories)
+
+        property_file = os.path.basename(filename)
         lib.write(
-            os.path.join(
-                directories,
-                property_file
-            ),
-            properties
+            os.path.join(directories, property_file),
+            properties,
         )
 
 
 def forward_path_parser(_input):
-    """parsing plain dict to nested"""
+    """
+    parsing plain dict to nested.
+
+    #TODO: add example usage; input -> output
+    """
 
     def get_or_create_by_key(key, current_tree):
         """update dict by key"""
@@ -91,7 +82,11 @@ def forward_path_parser(_input):
 
 
 def backward_path_parser(_input):
-    """make nested structure plain"""
+    """
+    make nested structure plain.
+
+    #TODO: add example usage; input -> output
+    """
 
     def path_builder(current_tree, key=''):
         """make plain"""
