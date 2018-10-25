@@ -23,18 +23,17 @@
         TBD
 """
 
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 
 import argparse
-import fnmatch
 import os
 
 from collections import OrderedDict
 
 from shaper import lib
 from shaper import manager
-from shaper.lib.configi import FILE_TYPES
-
+from shaper.renderer import render_template
+from shaper.renderer import merge_templates
 
 def parse_arguments():
     """Argument parsing
@@ -122,7 +121,18 @@ def main():
     """main"""
     arguments = parse_arguments()
 
-    if arguments.parser == "read":
+    if arguments.parser == "play":
+        playbook = lib.read(arguments.src_path)
+        context = playbook.get("variables", {})
+        templates = playbook.get("templates", [])
+        template_dir = os.path.dirname(arguments.src_path)
+        rendered_templates = []
+
+        for template in templates:
+            rendered_templates.append(render_template(template, context))
+        merge_templates(rendered_templates, template_dir)
+
+    elif arguments.parser == "read":
         tree = manager.forward_path_parser(
             manager.read_properties(
                 arguments.src_path

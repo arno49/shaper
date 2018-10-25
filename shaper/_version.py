@@ -497,6 +497,10 @@ def get_versions():
         # this to find the root from __file__.
         for i in cfg.versionfile_source.split('/'):
             root = os.path.dirname(root)
+            # skip lint warn
+            if i:
+                pass
+
     except NameError:
         return {"version": "0+unknown", "full-revisionid": None,
                 "dirty": None,

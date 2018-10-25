@@ -27,7 +27,10 @@ import sys
 import json
 
 from collections import OrderedDict
-from io import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 from xml.dom.minidom import parseString
 
 import dicttoxml
@@ -202,8 +205,8 @@ def read_property(path_to_file):
     content = read_plain_text(path_to_file)
 
     config = StringIO()
-    config.write(u'[dummy_section]\n')
-    config.write(content.decode().replace('%', '%%'))
+    config.write('[dummy_section]\n')
+    config.write(content.replace('%', '%%'))
     config.seek(0, os.SEEK_SET)
 
     conf_parser = ConfigParser.SafeConfigParser()
