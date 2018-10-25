@@ -35,6 +35,7 @@ from shaper import manager
 from shaper.renderer import render_template
 from shaper.renderer import merge_templates
 
+
 def parse_arguments():
     """Argument parsing
 
