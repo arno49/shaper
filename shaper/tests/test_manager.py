@@ -1,6 +1,6 @@
 """Unittests for shaper.manager"""
+# pylint: disable=R0201
 
-import os
 import unittest
 
 from mock import patch
