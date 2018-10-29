@@ -39,10 +39,10 @@ import xmltodict
 import oyaml as yaml
 
 
-if sys.version_info > (3, 0):
-    import configparser as ConfigParser
-else:
+try:
     import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 
 def read_plain_text(path_to_file):
@@ -210,6 +210,7 @@ def read_property(path_to_file):
     config.seek(0, os.SEEK_SET)
 
     conf_parser = ConfigParser.SafeConfigParser()
+    # pylint: disable=deprecated-method
     conf_parser.readfp(config)
 
     return OrderedDict(conf_parser.items('dummy_section'))
