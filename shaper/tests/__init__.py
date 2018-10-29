@@ -1,7 +1,7 @@
-from test_renderer import TestRenderer
+"""shaper tests"""
+
 from test_manager import TestManager
 
 __all__ = [
     "TestManager",
-    "TestRenderer",
     ]

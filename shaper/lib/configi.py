@@ -296,14 +296,14 @@ def read(path_to_file, file_type="auto"):
         try:
             return parser(path_to_file)
 
-        except Exception as e:
+        except Exception as except_details:
             except_message = "Failed to parse {}".format(
                 os.path.abspath(path_to_file)
             )
 
             print("{}\n{}".format(
                 except_message,
-                e
+                except_details
             ))
             return except_message
 
