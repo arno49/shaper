@@ -1,5 +1,9 @@
 # Shaper
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/arno49/shaper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/arno49/shaper/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/arno49/shaper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/arno49/shaper/context:python)
+[![codecov](https://codecov.io/gh/arno49/shaper/branch/master/graph/badge.svg)](https://codecov.io/gh/arno49/shaper)
+
 Tool for render configurations from few templates/sources.
 
 ## Getting Started
