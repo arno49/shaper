@@ -19,6 +19,9 @@ install:
 script:
   - tox
 
+after_success:
+  - bash < (curl -s https://codecov.io/bash)
+
 deploy:
   provider: pypi
   user: arno49

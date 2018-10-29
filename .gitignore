@@ -100,3 +100,4 @@ ENV/
 .mypy_cache/
 .idea/
 out.yml
+.DS_Store

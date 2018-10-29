@@ -296,6 +296,9 @@ def read(path_to_file, file_type="auto"):
         try:
             return parser(path_to_file)
 
+        # pylint: disable=broad-except
+        # disable cause of list of exceptions
+        # not known due to a lot of parsers
         except Exception as except_details:
             except_message = "Failed to parse {}".format(
                 os.path.abspath(path_to_file)

@@ -61,6 +61,8 @@ def forward_path_parser(_input):
         """update dict by key"""
         if key not in current_tree:
             last = keys.pop()
+            # pylint: disable=undefined-loop-variable
+            # this value defined !
             dict_update = {last: value}
 
             for _key in reversed(keys):
