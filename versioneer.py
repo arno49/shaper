@@ -1820,3 +1820,4 @@ if __name__ == "__main__":
         errors += scan_setup_py()
         if errors:
             sys.exit(1)
+# lgtm [py/similar-function]
