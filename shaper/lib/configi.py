@@ -262,15 +262,14 @@ def type_choise(path_to_file):
     """
 
     extension = os.path.splitext(path_to_file)[-1]
-    if extension in FILE_TYPES:
-        return FILE_TYPES.get(extension)
-    else:
+    if extension not in FILE_TYPES:
         print(
             "Unknown file extension in {}".format(
                 path_to_file
             )
         )
         return None, None
+    return FILE_TYPES.get(extension)
 
 
 def read(path_to_file, file_type="auto"):
