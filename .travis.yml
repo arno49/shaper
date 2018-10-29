@@ -1,10 +1,13 @@
+env:
+  global:
+    secure: gFJse3ZcLFj86UX3VK7cnkzGa7R601henE3E2ZMULcMmVsp/vTXzUhUA/v8cyRbaePRgmnyG/pcJU82rzZSIRmnAsR9ujAoUTXlxuvhmOjwNpvybmViUctKGQHyCOmuJ5i1gTg+skCrsGXSACF0v3Z46RtExEBN6R06CVuiFKzKFu9sYttWayQfheCaOT06ZLOnHDNEq+IGCkUJyhqi905d0N7iQzvSPnfcptha6nOXgWMTxx3Cwi1y1sGThLLpKfnIB8qDlqkH6IGzrGLMFV4vNhvBlUe9k2vGLpyNvgfpdbjhGLkzZGKC5xLW7RanM/ajiFH30DOk293+eU9lcRy+YoKoZALVuNO6ToOiVoWB/KAMxGyAqBoagfgZuDDiYcpWzOi3LzSonw698wfSqKIER3Dv4ZZR+tW/JFg4zR44UYXP4cmkg2AXlrRZnjYLVVl5K/3omCDvAhSvJayv8gbeuMKzeDA9/c6RwdZIUbrra+ztozJyF6TlOacoWLtjtp5pm48YSZ3/RlDdhYY2FMC9JLaBAnazFowhmv1Xtk9yWXLZsw0bDEgcDPrDXpd/kn1rlMRf5nK6N/bBBRlq1hk66rLmU+DN7McQGOciqFW6TWLvCkj/R41tulcmfBOqh2vvJIci6Ce27VWDh5HrAI6Y4g/Disg0/fV3rvGe1y4c=
+
 language: python
 
 matrix:
   include:
     - python: 2.7
       env: TOXENV=py27
-
     - python: 3.7
       env: TOXENV=py37
 
@@ -19,6 +22,6 @@ deploy:
   user: arno49
   password:
     secure: PRelwjuuhHe4Kn449uBpfUBdu8Ppj6OafFlfPxSpTlipWAiRkRCy6W9mNaN/ivf1kv+Hk1RRv/ZLCZVqH0KrPDN8ovGcBsqVOP66PfRaqy7k68X4W2wNJaQtLwIEwqj37GUfW8G43qiDKfrTtRiY1cRfN7LbqogbrEXYITYtCwcaxhogKgVH8DQlirjy4danDJeNT02GuU0RfXztxPXLM1GkbvPLsvjFJNkCJTUJl4Hi1YDzN7J9LJzfsm751k7Pt9qXG/z9e+MLB7J0hhsnMV3ihTtwRaoBdea7z6d3LTl9INqIdkB4Wcg8T5A+NESRvEIZFrn6jToiNe9tPkGJCL80hjMXKBLnhVt42AJ2NG5Z1ilUHJkivR84FbFRTc5oZKe8X6SjhEXF5JHb4BNBuAPptZ6t9ex3t6opay2lxrzroCkPlvykLm9Tao7x/JLwCL+p671Ka8w/xJvWD6aGYvKPDKmNVQBsmtrEKpO0n2bx8gH7Fjii+DXwNEzekx5rLVUgJlQNBXo9IBkHFyfZX2HpzV8PRuTIgrSxrvmUfVVJFhUjpymbbc2kUuZyPGj82bDtzsidkgKRbWZsg6NXDpcBnKE26xh/WqF0REO69xd5b/tO53oRwq1ZmooX4H7hWAW5rGu71MUAjaGR1SU3+uxwx30nhnYbEYbJKVXKNCw=
-  distributions: "sdist bdist_wheel --universal"
+  distributions: sdist bdist_wheel --universal
   on:
     tags: true
