@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""shaper renderer - tools to working with templates"""
 from __future__ import print_function
 
 import os
@@ -32,8 +33,17 @@ def render_template(template_path, context):
 
 
 def merge_templates(rendered_templates, template_dir):
+    """
+    Merge templates
+
+    :param rendered_templates: list of rendered templates to merge
+
+    :param template_dir: path to rendered templates
+
+    :return: None
+    """
     dict_base = {}
     for var in rendered_templates:
         dict_base.update(yaml.safe_load(var))
-    with open(os.path.join(template_dir, 'templates.yaml'), 'w') as f:
-        yaml.dump(dict_base, f, default_flow_style=False)
+    with open(os.path.join(template_dir, 'templates.yaml'), 'w') as _fd:
+        yaml.dump(dict_base, _fd, default_flow_style=False)

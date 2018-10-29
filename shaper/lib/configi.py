@@ -308,7 +308,9 @@ def read(path_to_file, file_type="auto"):
             return except_message
 
     else:
-        return "Unsupported file extension"
+        return {
+            "msg": "Unsupported file extension"
+        }
 
 
 def write(path_to_file, data, file_type="auto"):

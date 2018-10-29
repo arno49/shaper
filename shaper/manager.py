@@ -55,8 +55,6 @@ def write_properties(datastructure, out_path):
 def forward_path_parser(_input):
     """
     parsing plain dict to nested.
-
-    #TODO: add example usage; input -> output
     """
 
     def get_or_create_by_key(key, current_tree):
@@ -85,8 +83,6 @@ def forward_path_parser(_input):
 def backward_path_parser(_input):
     """
     make nested structure plain.
-
-    #TODO: add example usage; input -> output
     """
 
     def path_builder(current_tree, key=''):
@@ -98,7 +94,7 @@ def backward_path_parser(_input):
             else:
                 path_builder(_value, _key)
 
-    output = {}
+    output = OrderedDict()
     path_builder(_input)
 
     return output

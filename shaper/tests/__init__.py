@@ -1,6 +1,6 @@
 """shaper tests"""
 
-from test_manager import TestManager
+from shaper.tests.test_manager import TestManager
 
 __all__ = [
     "TestManager",
