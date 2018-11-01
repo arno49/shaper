@@ -6,7 +6,15 @@ from __future__ import print_function
 import os
 import yaml
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Undefined
+
+
+class IgnoreUndefinedAttr(Undefined):  # pylint: disable=too-few-public-methods
+    """
+    Class for ignoring undefined attributes
+    """
+    def __getattr__(self, name):
+        return None
 
 
 def render_template(template_path, context):
@@ -22,10 +30,12 @@ def render_template(template_path, context):
     :return: rendered template
     :rtype: str
     """
+
     env = Environment(
         loader=FileSystemLoader(
             os.path.dirname(template_path)
-        )
+        ),
+        undefined=IgnoreUndefinedAttr
     )
     env.globals.update(context)
     template = env.get_template(os.path.basename(template_path))

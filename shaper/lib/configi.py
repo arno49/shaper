@@ -36,13 +36,86 @@ from xml.dom.minidom import parseString
 import dicttoxml
 import xmltodict
 
-import oyaml as yaml
+import yaml
 
 
 try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
+
+
+class OrderedDictYAMLLoader(yaml.Loader):  # pylint: disable=too-many-ancestors
+    """
+    A YAML loader that loads mappings into ordered dictionaries.
+    """
+
+    def __init__(self, *args, **kwargs):
+        yaml.Loader.__init__(self, *args, **kwargs)
+
+        self.add_constructor(
+            u'tag:yaml.org,2002:map',
+            type(self).construct_yaml_map
+        )
+        self.add_constructor(
+            u'tag:yaml.org,2002:omap',
+            type(self).construct_yaml_map
+        )
+
+    def construct_yaml_map(self, node):
+        data = OrderedDict()
+        yield data
+        value = self.construct_mapping(node)
+        data.update(value)
+
+    def construct_mapping(self, node, deep=False):
+        if isinstance(node, yaml.MappingNode):
+            self.flatten_mapping(node)
+        else:
+            raise yaml.constructor.ConstructorError(
+                None,
+                None,
+                'expected a mapping node, but found %s' % node.id,
+                node.start_mark
+            )
+
+        mapping = OrderedDict()
+        for key_node, value_node in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            try:
+                hash(key)
+            except TypeError as exc:
+                raise yaml.constructor.ConstructorError(
+                    'while constructing a mapping',
+                    node.start_mark,
+                    'found unacceptable key (%s)' % exc, key_node.start_mark
+                )
+            value = self.construct_object(value_node, deep=deep)
+            mapping[key] = value
+        return mapping
+
+
+def represent_ordereddict(dumper, data):
+    """
+    Function for Ordered Dictionary representation
+    """
+    value = []
+
+    for item_key, item_value in data.items():
+        node_key = dumper.represent_data(item_key)
+        node_value = dumper.represent_data(item_value)
+
+        value.append((node_key, node_value))
+
+    return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', value)
+
+
+def represent_unicode(dumper, uni):  # pylint: disable=unused-argument
+    """
+    Function for unicode representation
+    """
+    node = yaml.ScalarNode(tag=u'tag:yaml.org,2002:str', value=uni)
+    return node
 
 
 def read_plain_text(path_to_file):
@@ -97,7 +170,7 @@ def read_yaml(path_to_file):
     :return: datastructure
     :rtype: dict
     """
-    return yaml.load(read_plain_text(path_to_file))
+    return yaml.load(read_plain_text(path_to_file), OrderedDictYAMLLoader)
 
 
 def write_yaml(path_to_file, data):
@@ -113,11 +186,21 @@ def write_yaml(path_to_file, data):
     :rtype: None
 
     """
+    yaml.add_representer(OrderedDict, represent_ordereddict)
+    if sys.version_info[0] == 2:
+        yaml.add_representer(
+            unicode,  # pylint: disable=undefined-variable
+            represent_unicode
+        )
+
     content = yaml.dump(
         data,
         default_flow_style=False,
         allow_unicode=True,
     )
+
+    if sys.version_info[0] == 3:
+        content = bytearray(content, 'utf-8')
 
     write_plain_text(path_to_file, content)
 
