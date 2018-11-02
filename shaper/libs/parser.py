@@ -47,32 +47,27 @@ from .loader import (
 class BaseParser(object):
 
     @staticmethod
-    def parsers_choice(filepath=None, ext=None):
+    def parsers_choice(filepath):
         """Get parser class by file type.
 
         :param filepath: string path to file
-        :param ext: string file ext
         :return: parser class
         """
 
-        assert (filepath, ext) != (None, None), "At least one param shouldn't be None"  # noqa
-
-        if not ext:
-            _, ext = os.path.splitext(filepath)
+        _, ext = os.path.splitext(filepath)
 
         return PARSERS_MAPPING.get(ext)
 
-    def read(self, path, file_type=None):
+    def read(self, path):
         """Read file data structure according its type. Default type choose
         dynamic with magic function.
 
         :param path: string path to file
-        :param file_type: string file ext
         :return: File data structure
         :rtype: [dict, list]
         """
 
-        parser_class = self.parsers_choice(filepath=path, ext=file_type)
+        parser_class = self.parsers_choice(path)
         if not parser_class:
             return {
                 'msg': 'Unsupported file extension for {file}'.format(file=path),  # noqa
@@ -90,12 +85,11 @@ class BaseParser(object):
                 '{message}\n{exception}'.format(message=msg, exception=exc),
             )
 
-    def write(self, data, path, file_type=None):
+    def write(self, data, path):
         """Write data in file according its type. Default type choose dynamic
         with magic function.
 
         :param path: string path to file
-        :param file_type: string file ext
         :param data: data
         :type data: [str, dict, list]
 
@@ -103,7 +97,7 @@ class BaseParser(object):
         :rtype: None
         """
 
-        parser_class = self.parsers_choice(filepath=path, ext=file_type)
+        parser_class = self.parsers_choice(path)
         parser_class().write(data, path)
 
 
@@ -283,6 +277,7 @@ class PropertyParser(TextParser):
         config.seek(0, os.SEEK_SET)
 
         conf_parser = ConfigParser.SafeConfigParser()
+        conf_parser.optionxform = str
         # pylint: disable=deprecated-method
         conf_parser.readfp(config)
 
