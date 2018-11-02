@@ -1,11 +1,7 @@
 from collections import OrderedDict
 
 import yaml
-
-try:
-    from yaml import ConstructorError
-except ImportError:
-    from yaml.constructor import ConstructorError
+from yaml.constructor import ConstructorError
 
 
 class OrderedDictYAMLLoader(yaml.Loader):  # pylint: disable=too-many-ancestors
@@ -66,7 +62,7 @@ def represent_ordered_dict(dumper, data):
     return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', value)
 
 
-def represent_unicode(dumper, unicode):  # pylint: disable=unused-argument
+def represent_unicode(dumper, _unicode):  # pylint: disable=unused-argument
     """Function for unicode representation."""
 
-    return yaml.ScalarNode(u'tag:yaml.org,2002:str', unicode)
+    return yaml.ScalarNode(u'tag:yaml.org,2002:str', _unicode)

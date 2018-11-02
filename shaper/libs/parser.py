@@ -28,36 +28,37 @@ import sys
 from collections import OrderedDict
 from xml.dom.minidom import parseString
 
-import dicttoxml
-import xmltodict
-import yaml
-from .yaml import (
-    OrderedDictYAMLLoader,
-    represent_ordered_dict,
-    represent_unicode,
-)
-
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
 
+import dicttoxml
+import xmltodict
+import yaml
 
-class BaseParser:
+from .loader import (
+    OrderedDictYAMLLoader,
+    represent_ordered_dict,
+    represent_unicode,
+)
+
+
+class BaseParser(object):
 
     @staticmethod
-    def parsers_choice(file=None, ext=None):
+    def parsers_choice(filepath=None, ext=None):
         """Get parser class by file type.
 
-        :param file: string path to file
+        :param filepath: string path to file
         :param ext: string file ext
         :return: parser class
         """
 
-        assert (file, ext) != (None, None), "At least one param shouldn't be None"  # noqa
+        assert (filepath, ext) != (None, None), "At least one param shouldn't be None"  # noqa
 
         if not ext:
-            _, ext = os.path.splitext(file)
+            _, ext = os.path.splitext(filepath)
 
         return PARSERS_MAPPING.get(ext)
 
@@ -71,7 +72,7 @@ class BaseParser:
         :rtype: [dict, list]
         """
 
-        parser_class = self.parsers_choice(file=path, ext=file_type)
+        parser_class = self.parsers_choice(filepath=path, ext=file_type)
         if not parser_class:
             return {
                 'msg': 'Unsupported file extension for {file}'.format(file=path),  # noqa
@@ -102,11 +103,11 @@ class BaseParser:
         :rtype: None
         """
 
-        parser_class = self.parsers_choice(file=path, ext=file_type)
+        parser_class = self.parsers_choice(filepath=path, ext=file_type)
         parser_class().write(data, path)
 
 
-class TextParser:
+class TextParser(object):
 
     def read(self, path):
         """Read plaintext file.
@@ -156,7 +157,10 @@ class YAMLParser(TextParser):
         :rtype: dict
         """
 
-        return yaml.load(super().read(path), Loader=OrderedDictYAMLLoader)
+        return yaml.load(
+            super(YAMLParser, self).read(path),
+            Loader=OrderedDictYAMLLoader,
+        )
 
     def write(self, data, path):
         """Dump data structure to YAML.
@@ -185,10 +189,10 @@ class YAMLParser(TextParser):
         if sys.version_info[0] == 3:
             content = bytearray(content, 'utf-8')
 
-        super().write(content, path)
+        super(YAMLParser, self).write(content, path)
 
 
-class JSONParser:
+class JSONParser(object):
 
     @staticmethod
     def read(path):
@@ -232,7 +236,7 @@ class XMLParser(TextParser):
         :rtype: dict
         """
 
-        return xmltodict.parse(super().read(path))
+        return xmltodict.parse(super(XMLParser, self).read(path))
 
     def write(self, data, path):
         """Dump data structure to XML.
@@ -253,7 +257,7 @@ class XMLParser(TextParser):
             ),
         )
 
-        super().write(dom.toprettyxml(encoding='utf-8'), path)
+        super(XMLParser, self).write(dom.toprettyxml(encoding='utf-8'), path)
 
 
 class PropertyParser(TextParser):
@@ -271,7 +275,7 @@ class PropertyParser(TextParser):
         except ImportError:
             import configparser as ConfigParser
 
-        content = super().read(path)
+        content = super(PropertyParser, self).read(path)
 
         config = StringIO()
         config.write('[dummy_section]\n')
@@ -295,7 +299,7 @@ class PropertyParser(TextParser):
         :rtype: None
         """
 
-        super().write(
+        super(PropertyParser, self).write(
             '\n'.join(['{}={}'.format(item[0], item[1]) for item in data.items()]),  # noqa
             path,
         )
