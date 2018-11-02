@@ -37,11 +37,6 @@ from .renderer import merge_templates
 
 
 def parse_arguments():
-    """Argument parsing
-
-    :return: args namespace
-    :rtype: namespace
-    """
     parser = argparse.ArgumentParser(
         description='Tool to manage java properties',
     )
@@ -126,11 +121,11 @@ def main():
         context = playbook.get('variables', {})
         templates = playbook.get('templates', [])
         template_dir = os.path.dirname(arguments.src_path)
-        
+
         rendered_templates = [
             render_template(template, context) for template in templates
         ]
-            
+
         merge_templates(rendered_templates, template_dir)
 
     elif arguments.parser == 'read':

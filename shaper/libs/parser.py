@@ -26,7 +26,11 @@ import json
 import os
 import sys
 from collections import OrderedDict
+from xml.dom.minidom import parseString
 
+import dicttoxml
+import xmltodict
+import yaml
 from .yaml import (
     OrderedDictYAMLLoader,
     represent_ordered_dict,
@@ -37,17 +41,12 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-from xml.dom.minidom import parseString
-
-import dicttoxml
-import xmltodict
-
-import yaml
 
 
 class BaseParser:
 
-    def parsers_choice(self, file=None, ext=None):
+    @staticmethod
+    def parsers_choice(file=None, ext=None):
         """Get parser class by file type.
 
         :param file: string path to file
@@ -72,14 +71,14 @@ class BaseParser:
         :rtype: [dict, list]
         """
 
-        parser = self.parsers_choice(file=path, ext=file_type)
-        if not parser:
+        parser_class = self.parsers_choice(file=path, ext=file_type)
+        if not parser_class:
             return {
                 'msg': 'Unsupported file extension for {file}'.format(file=path),  # noqa
             }
 
         try:
-            return parser().read(path)
+            return parser_class().read(path)
 
         # pylint: disable=broad-except
         # disable cause of list of exceptions
@@ -103,8 +102,8 @@ class BaseParser:
         :rtype: None
         """
 
-        parser = self.parsers_choice(file=path, ext=file_type)
-        parser().write(data, path)
+        parser_class = self.parsers_choice(file=path, ext=file_type)
+        parser_class().write(data, path)
 
 
 class TextParser:
@@ -126,10 +125,10 @@ class TextParser:
                 'Failed to read {file}: {msg}'.format(file=path, msg=str(exc)),
             )
 
-    def write(self, content, path):
+    def write(self, data, path):
         """Write plaintext file.
 
-        :param content: file content
+        :param data: file content
         :param path: string path to file
         :return: str
 
@@ -139,7 +138,7 @@ class TextParser:
 
         try:
             with open(path, 'wb') as fd:
-                fd.write(content)
+                fd.write(data)
 
         except (ValueError, OSError, IOError) as exc:
             sys.stderr.write(

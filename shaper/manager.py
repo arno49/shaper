@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""shaper manager - manage libsrary"""
+"""shaper manager - manage library"""
 
 from __future__ import print_function
 
@@ -30,11 +30,11 @@ def create_folders(path_to_folder):
             raise EOFError
 
 
-def read_properties(dir):
+def read_properties(_dir):
     """Interface for reading properties recursively."""
 
     return {
-        filename: libs.parser.read(filename) for filename in walk_on_path(dir)
+        filename: libs.parser.read(filename) for filename in walk_on_path(_dir)
     }
 
 
