@@ -32,10 +32,8 @@ def render_template(template_path, context):
     """
 
     env = Environment(
-        loader=FileSystemLoader(
-            os.path.dirname(template_path)
-        ),
-        undefined=IgnoreUndefinedAttr
+        loader=FileSystemLoader(os.path.dirname(template_path)),
+        undefined=IgnoreUndefinedAttr,
     )
     env.globals.update(context)
     template = env.get_template(os.path.basename(template_path))
