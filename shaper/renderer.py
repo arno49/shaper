@@ -45,5 +45,6 @@ def merge_templates(rendered_templates, template_dir):
     dict_base = {}
     for var in rendered_templates:
         dict_base.update(yaml.safe_load(var))
+
     with open(os.path.join(template_dir, 'templates.yaml'), 'w') as _fd:
         yaml.dump(dict_base, _fd, default_flow_style=False)
