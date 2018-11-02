@@ -37,7 +37,7 @@ setup(
     name='shaper',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    packages=find_packages(),
+    packages=find_packages(include=['shaper.*']),
     include_package_data=True,
     description='Manage application options',
     long_description=description,
