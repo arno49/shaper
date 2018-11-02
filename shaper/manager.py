@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""shaper manager - manage library"""
+"""shaper manager - manage libsrary"""
 
 from __future__ import print_function
 
@@ -8,14 +8,14 @@ import fnmatch
 import os
 from collections import OrderedDict
 
-from . import lib
+from . import libs
 
 
 def walk_on_path(path):
     """Recursively find files with pattern."""
 
     for root, _, files in os.walk(path):
-        for pattern in lib.PARSERS_MAPPING:
+        for pattern in libs.PARSERS_MAPPING:
             for filename in fnmatch.filter(files, '*{}'.format(pattern)):
                 yield os.path.join(root, filename)
 
@@ -34,7 +34,7 @@ def read_properties(dir):
     """Interface for reading properties recursively."""
 
     return {
-        filename: lib.parser.read(filename) for filename in walk_on_path(dir)
+        filename: libs.parser.read(filename) for filename in walk_on_path(dir)
     }
 
 
@@ -49,7 +49,7 @@ def write_properties(datastructure, path):
         create_folders(directories)
 
         property_file = os.path.basename(filename)
-        lib.parser.write(
+        libs.parser.write(
             properties,
             os.path.join(directories, property_file),
         )

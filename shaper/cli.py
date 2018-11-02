@@ -30,7 +30,7 @@ import os
 
 from collections import OrderedDict
 
-from . import lib
+from . import libs
 from . import manager
 from .renderer import render_template
 from .renderer import merge_templates
@@ -122,7 +122,7 @@ def main():
     arguments = parse_arguments()
 
     if arguments.parser == 'play':
-        playbook = lib.parser.read(arguments.src_path)
+        playbook = libs.parser.read(arguments.src_path)
         context = playbook.get('variables', {})
         templates = playbook.get('templates', [])
         template_dir = os.path.dirname(arguments.src_path)
@@ -138,10 +138,10 @@ def main():
             manager.read_properties(arguments.src_path)
         )
 
-        lib.parser.write(tree, arguments.out)
+        libs.parser.write(tree, arguments.out)
 
     elif arguments.parser == 'write':
-        yaml_data = lib.parser.read(arguments.src_structure)
+        yaml_data = libs.parser.read(arguments.src_structure)
         datastructure = manager.backward_path_parser(yaml_data)
 
         # filter render files by key

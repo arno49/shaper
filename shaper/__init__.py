@@ -9,10 +9,11 @@
     Minsk 2018
 """
 
-from shaper import lib
+from . import libs
 
 from ._version import get_versions
+
 __version__ = get_versions()['version']
 
 
-__all__ = ["lib", "__version__"]
+__all__ = ['libs', '__version__']
