@@ -27,6 +27,12 @@ import os
 import sys
 from collections import OrderedDict
 
+from .yaml import (
+    OrderedDictYAMLLoader,
+    represent_ordered_dict,
+    represent_unicode,
+)
+
 try:
     from StringIO import StringIO
 except ImportError:
@@ -36,7 +42,7 @@ from xml.dom.minidom import parseString
 import dicttoxml
 import xmltodict
 
-import oyaml as yaml
+import yaml
 
 
 class BaseParser:
@@ -151,7 +157,7 @@ class YAMLParser(TextParser):
         :rtype: dict
         """
 
-        return yaml.load(super().read(path))
+        return yaml.load(super().read(path), Loader=OrderedDictYAMLLoader)
 
     def write(self, data, path):
         """Dump data structure to YAML.
@@ -164,11 +170,21 @@ class YAMLParser(TextParser):
         :rtype: None
         """
 
+        yaml.add_representer(OrderedDict, represent_ordered_dict)
+        if sys.version_info[0] == 2:
+            yaml.add_representer(
+                unicode,  # pylint: disable=undefined-variable
+                represent_unicode,
+            )
+
         content = yaml.dump(
             data,
             default_flow_style=False,
             allow_unicode=True,
         )
+
+        if sys.version_info[0] == 3:
+            content = bytearray(content, 'utf-8')
 
         super().write(content, path)
 
