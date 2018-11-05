@@ -30,53 +30,48 @@ import os
 
 from collections import OrderedDict
 
-from shaper import lib
-from shaper import manager
-from shaper.renderer import render_template
-from shaper.renderer import merge_templates
+from . import libs
+from . import manager
+from .renderer import render_template
+from .renderer import merge_templates
 
 
 def parse_arguments():
-    """Argument parsing
-
-    :return: args namespace
-    :rtype: namespace
-    """
     parser = argparse.ArgumentParser(
-        description='Tool to manage java properties'
+        description='Tool to manage java properties',
     )
 
     parser.add_argument(
-        "-v",
-        dest="logging",
-        action="count",
+        '-v',
+        dest='logging',
+        action='count',
         default=0,
-        help="Verbose output"
+        help='Verbose output',
     )
 
     subparsers = parser.add_subparsers(
-        dest="parser"
+        dest='parser',
     )
 
     read = subparsers.add_parser(
-        "read",
-        help="Recursive read properties from files"
+        'read',
+        help='Recursive read properties from files.',
     )
 
     write = subparsers.add_parser(
-        "write",
-        help="Write properties files from datastructure"
+        'write',
+        help='Write properties files from datastructure.',
     )
 
     play = subparsers.add_parser(
-        "play",
-        help="Run playbook like ansible"
+        'play',
+        help='Run playbook like ansible.',
     )
 
     read.add_argument(
         'src_path',
         type=str,
-        help='Path to properties directory',
+        help='Path to properties directory.',
     )
 
     read.add_argument(
@@ -84,13 +79,13 @@ def parse_arguments():
         '--out',
         dest='out',
         default='out.yml',
-        help='Output file. Default out.yaml',
+        help='Output file. Default out.yaml.',
     )
 
     write.add_argument(
-        "src_structure",
+        'src_structure',
         type=str,
-        help="Path to yaml with datastructure."
+        help='Path to yaml with datastructure.',
     )
 
     write.add_argument(
@@ -98,7 +93,7 @@ def parse_arguments():
         '--out',
         dest='out',
         default='./out/',
-        help='Path to output directory. Default ./out/',
+        help='Path to output directory. Default ./out/.',
     )
 
     write.add_argument(
@@ -106,56 +101,53 @@ def parse_arguments():
         '--key',
         dest='key',
         default=None,
-        help='Key for rendering custom subtree. Default render from root',
+        help='Key for rendering custom subtree. Default render from root.',
     )
 
     play.add_argument(
         'src_path',
         type=str,
-        help='Path to playbook',
+        help='Path to playbook.',
     )
 
     return parser.parse_args()
 
 
 def main():
-    """main"""
     arguments = parse_arguments()
 
-    if arguments.parser == "play":
-        playbook = lib.read(arguments.src_path)
-        context = playbook.get("variables", {})
-        templates = playbook.get("templates", [])
+    if arguments.parser == 'play':
+        playbook = libs.parser.read(arguments.src_path)
+        context = playbook.get('variables', {})
+        templates = playbook.get('templates', [])
         template_dir = os.path.dirname(arguments.src_path)
-        rendered_templates = []
 
-        for template in templates:
-            rendered_templates.append(render_template(template, context))
+        rendered_templates = [
+            render_template(template, context) for template in templates
+        ]
+
         merge_templates(rendered_templates, template_dir)
 
-    elif arguments.parser == "read":
+    elif arguments.parser == 'read':
         tree = manager.forward_path_parser(
-            manager.read_properties(
-                arguments.src_path
-            )
+            manager.read_properties(arguments.src_path)
         )
 
-        lib.write(arguments.out, tree)
+        libs.parser.write(tree, arguments.out)
 
-    elif arguments.parser == "write":
-        yaml_data = lib.read(arguments.src_structure)
+    elif arguments.parser == 'write':
+        yaml_data = libs.parser.read(arguments.src_structure)
         datastructure = manager.backward_path_parser(yaml_data)
 
         # filter render files by key
         if arguments.key:
             datastructure = OrderedDict(
                 (key, value)
-                for key, value in datastructure.items()
-                if arguments.key in key
+                for key, value in datastructure.items() if arguments.key in key
             )
 
         if arguments.logging:
-            print("==> Files to render :")
+            print('==> Files to render :')
             print('\n'.join(datastructure.keys()))
 
         manager.write_properties(datastructure, arguments.out)
@@ -164,5 +156,5 @@ def main():
         raise NotImplementedError
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

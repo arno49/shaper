@@ -32,10 +32,8 @@ def render_template(template_path, context):
     """
 
     env = Environment(
-        loader=FileSystemLoader(
-            os.path.dirname(template_path)
-        ),
-        undefined=IgnoreUndefinedAttr
+        loader=FileSystemLoader(os.path.dirname(template_path)),
+        undefined=IgnoreUndefinedAttr,
     )
     env.globals.update(context)
     template = env.get_template(os.path.basename(template_path))
@@ -55,5 +53,6 @@ def merge_templates(rendered_templates, template_dir):
     dict_base = {}
     for var in rendered_templates:
         dict_base.update(yaml.safe_load(var))
+
     with open(os.path.join(template_dir, 'templates.yaml'), 'w') as _fd:
         yaml.dump(dict_base, _fd, default_flow_style=False)
