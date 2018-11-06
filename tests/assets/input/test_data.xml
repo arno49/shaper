@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<people>
+	<person>
+		<name>Mr. Krabs</name>
+		<title>Founder</title>
+	</person>
+	<person>
+		<name>SpongeBob</name>
+		<title>Cook</title>
+	</person>
+	<person>
+		<name>Squidward</name>
+		<title>Cashier</title>
+	</person>
+</people>

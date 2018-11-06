@@ -33,10 +33,10 @@ try:
 except ImportError:
     from io import StringIO
 
-import dicttoxml
 import xmltodict
 import yaml
 
+from . import dicttoxml
 from .loader import (
     OrderedDictYAMLLoader,
     represent_ordered_dict,
@@ -45,6 +45,7 @@ from .loader import (
 
 
 class BaseParser(object):
+    WARNING_MESSAGE = 'Warning. Unsupported file extension for {file}'
 
     @staticmethod
     def parsers_choice(filepath):
@@ -58,7 +59,7 @@ class BaseParser(object):
 
         return PARSERS_MAPPING.get(ext)
 
-    def read(self, path):
+    def read(self, path):  # pylint: disable=inconsistent-return-statements
         """Read file data structure according its type. Default type choose
         dynamic with magic function.
 
@@ -68,22 +69,20 @@ class BaseParser(object):
         """
 
         parser_class = self.parsers_choice(path)
-        if not parser_class:
-            return {
-                'msg': 'Unsupported file extension for {file}'.format(file=path),  # noqa
-            }
+        if parser_class:
+            try:
+                return parser_class().read(path)
 
-        try:
-            return parser_class().read(path)
+            # pylint: disable=broad-except
+            # disable cause of list of exceptions
+            # not known due to a lot of parsers
+            except Exception as exc:
+                msg = 'Failed to parse {file}'.format(file=os.path.abspath(path))
+                sys.stderr.write(
+                    '{message}\n{exception}'.format(message=msg, exception=exc),
+                )
 
-        # pylint: disable=broad-except
-        # disable cause of list of exceptions
-        # not known due to a lot of parsers
-        except Exception as exc:
-            msg = 'Failed to parse {}'.format(os.path.abspath(path))
-            sys.stderr.write(
-                '{message}\n{exception}'.format(message=msg, exception=exc),
-            )
+        sys.stderr.write(self.WARNING_MESSAGE.format(file=path))
 
     def write(self, data, path):
         """Write data in file according its type. Default type choose dynamic
@@ -98,7 +97,10 @@ class BaseParser(object):
         """
 
         parser_class = self.parsers_choice(path)
-        parser_class().write(data, path)
+        if parser_class:
+            parser_class().write(data, path)
+        else:
+            sys.stderr.write(self.WARNING_MESSAGE.format(file=path))
 
 
 class TextParser(object):
@@ -137,7 +139,7 @@ class TextParser(object):
 
         except (ValueError, OSError, IOError) as exc:
             sys.stderr.write(
-                'Failed to write {file}: {msg}'.format(file=path, msg=str(exc)),  # noqa
+                'Failed to write {file}: {msg}'.format(file=path, msg=str(exc)),
             )
 
 
@@ -186,10 +188,9 @@ class YAMLParser(TextParser):
         super(YAMLParser, self).write(content, path)
 
 
-class JSONParser(object):
+class JSONParser(TextParser):
 
-    @staticmethod
-    def read(path):
+    def read(self, path):
         """JSON read.
 
         :param path: string path to file
@@ -197,10 +198,9 @@ class JSONParser(object):
         :rtype: dict
         """
 
-        return json.load(path)
+        return json.loads(super(JSONParser, self).read(path))
 
-    @staticmethod
-    def write(data, path):
+    def write(self, data, path):
         """Dump data to JSON.
 
         :param data: configuration data structure
@@ -211,13 +211,15 @@ class JSONParser(object):
         :rtype: None
         """
 
-        json.dump(
-            data,
-            path,
-            indent=4,
-            separators=(',', ': '),
-            encoding='utf-8',
-        )
+        kw = {'encoding': 'utf-8'} if sys.version_info[0] == 2 else {}
+        with open(path, 'w') as fd:
+            json.dump(
+                data,
+                fd,
+                indent=4,
+                separators=(',', ': '),
+                **kw
+            )
 
 
 class XMLParser(TextParser):
@@ -244,8 +246,10 @@ class XMLParser(TextParser):
         """
 
         dom = parseString(
-            dicttoxml.dicttoxml(
+            dicttoxml.dict_to_xml(
                 data,
+                fold_list=False,
+                item_func=lambda x: x,
                 attr_type=False,
                 root=False,
             ),
@@ -294,8 +298,11 @@ class PropertyParser(TextParser):
         :rtype: None
         """
 
+        stream = '\n'.join(
+            '{}={}'.format(item[0], item[1]) for item in data.items(),
+        )
         super(PropertyParser, self).write(
-            '\n'.join(['{}={}'.format(item[0], item[1]) for item in data.items()]),  # noqa
+            stream.encode(encoding='utf-8'),
             path,
         )
 
@@ -309,5 +316,5 @@ PARSERS_MAPPING = {
     '.xml': XMLParser,
     '.properties': PropertyParser,
     '.txt': TextParser,
-    '': TextParser,
+    # '': TextParser, TODO: think about how to parse files without extension
 }

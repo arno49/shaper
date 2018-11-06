@@ -12,14 +12,20 @@ class OrderedDictYAMLLoader(yaml.Loader):  # pylint: disable=too-many-ancestors
     def __init__(self, *args, **kwargs):
         yaml.Loader.__init__(self, *args, **kwargs)
 
-        self.add_constructor(
+        OrderedDictYAMLLoader.add_constructor(
             u'tag:yaml.org,2002:map',
-            self.construct_yaml_map,
+            OrderedDictYAMLLoader.construct_yaml_map,
         )
-        self.add_constructor(
+        OrderedDictYAMLLoader.add_constructor(
             u'tag:yaml.org,2002:omap',
-            self.construct_yaml_map,
+            OrderedDictYAMLLoader.construct_yaml_map,
         )
+
+    def construct_yaml_map(self, node):
+        data = OrderedDict()
+        yield data
+        value = self.construct_mapping(node)
+        data.update(value)
 
     def construct_mapping(self, node, deep=False):
         if isinstance(node, yaml.MappingNode):

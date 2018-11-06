@@ -30,10 +30,10 @@ import os
 
 from collections import OrderedDict
 
-from . import libs
-from . import manager
-from .renderer import render_template
-from .renderer import merge_templates
+from shaper import libs
+from shaper import manager
+from shaper.renderer import render_template
+from shaper.renderer import merge_templates
 
 
 def parse_arguments():
@@ -129,9 +129,8 @@ def main():
         merge_templates(rendered_templates, template_dir)
 
     elif arguments.parser == 'read':
-        tree = manager.forward_path_parser(
-            manager.read_properties(arguments.src_path)
-        )
+        gathered_data = manager.read_properties(arguments.src_path)
+        tree = manager.forward_path_parser(gathered_data)
 
         libs.parser.write(tree, arguments.out)
 

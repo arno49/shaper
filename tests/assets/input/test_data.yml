@@ -1,0 +1,8 @@
+people:
+  person:
+  - name: Mr. Krabs
+    title: Founder
+  - name: SpongeBob
+    title: Cook
+  - name: Squidward
+    title: Cashier
