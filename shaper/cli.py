@@ -135,8 +135,8 @@ def main():
         libs.parser.write(tree, arguments.out)
 
     elif arguments.parser == 'write':
-        yaml_data = libs.parser.read(arguments.src_structure)
-        datastructure = manager.backward_path_parser(yaml_data)
+        dict_data = libs.parser.read(arguments.src_structure)
+        datastructure = manager.backward_path_parser(dict_data)
 
         # filter render files by key
         if arguments.key:

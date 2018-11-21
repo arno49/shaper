@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 """shaper manager - manage library"""
 
-from __future__ import print_function
-
 import fnmatch
 import os
-from collections import OrderedDict
 
 from . import libs
 
@@ -60,12 +57,13 @@ def write_properties(datastructure, path):
 def forward_path_parser(_input):
     """Parsing plain dict to nested."""
 
-    def get_or_create_by_key(key, current_tree):
-        """update dict by key"""
+    def create_keys_recursively(key, current_tree):
+        """Update current tree by key(s)."""
+
         if key not in current_tree:
             last = keys.pop()
             # pylint: disable=undefined-loop-variable
-            # this value defined !
+            # this value defined in the shared outer-function scope
             dict_update = {last: value}
 
             for _key in reversed(keys):
@@ -73,14 +71,14 @@ def forward_path_parser(_input):
 
             current_tree.update(dict_update)
         else:
-            keys.pop(0)
-            get_or_create_by_key(keys[0], current_tree[key])
+            keys.pop(0)  # drop the first item that already in the tree, try next
+            create_keys_recursively(keys[0], current_tree[key])
 
     output = {}
-    for key, value in OrderedDict(_input).items():
+    for key, value in _input.items():
         keys = key.split('/')
 
-        get_or_create_by_key(keys[0], output)
+        create_keys_recursively(keys[0], output)
 
     return output
 
@@ -89,7 +87,8 @@ def backward_path_parser(_input):
     """Make nested structure plain."""
 
     def path_builder(current_tree, key=''):
-        """make plain"""
+        """Join all the keys from tree into right path."""
+
         for _key, _value in current_tree.items():
             _key = key + '/' + _key if key else _key
             if '.' in _key:
@@ -97,7 +96,7 @@ def backward_path_parser(_input):
             else:
                 path_builder(_value, _key)
 
-    output = OrderedDict()
+    output = {}
     path_builder(_input)
 
     return output
