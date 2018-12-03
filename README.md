@@ -1,10 +1,12 @@
 # Shaper
 
+[![Latest version](https://img.shields.io/pypi/v/shaper.svg)](https://pypi.org/project/shaper/)
 [![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/arno49/shaper/master/LICENSE)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/arno49/shaper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/arno49/shaper/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/arno49/shaper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/arno49/shaper/context:python)
 [![codecov](https://codecov.io/gh/arno49/shaper/branch/master/graph/badge.svg)](https://codecov.io/gh/arno49/shaper)
 [![Build Status](https://travis-ci.org/arno49/shaper.svg?branch=master)](https://travis-ci.org/arno49/shaper)
+
 Tool for render configurations from few templates/sources.
 
 ## Getting Started
