@@ -310,7 +310,7 @@ class PropertyParser(TextParser):
         """
 
         stream = '\n'.join(
-            '{}={}'.format(item[0], self._process_multiline_string(item[1])) for item in data.items(),
+            '{}={}'.format(item[0], self._process_multiline_string(item[1])) for item in data.items()
         )
         super(PropertyParser, self).write(
             stream.encode(encoding='utf-8'),
