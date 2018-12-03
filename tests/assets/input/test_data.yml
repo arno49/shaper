@@ -6,3 +6,7 @@ people:
     title: Cook
   - name: Squidward
     title: Cashier
+    multiline: |
+        line1,
+        line2,
+        line3

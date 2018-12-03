@@ -41,6 +41,7 @@ from .loader import (
     OrderedDictYAMLLoader,
     represent_ordered_dict,
     represent_unicode,
+    represent_multi_line,
 )
 
 
@@ -176,6 +177,9 @@ class YAMLParser(TextParser):
                 represent_unicode,
             )
 
+        # add string representer for multi line issue
+        yaml.add_representer(str, represent_multi_line)
+
         content = yaml.dump(
             data,
             default_flow_style=False,
@@ -260,6 +264,13 @@ class XMLParser(TextParser):
 
 class PropertyParser(TextParser):
 
+    @staticmethod
+    def _process_multiline_string(string):
+        string_splitted = string.splitlines()
+        if len(string_splitted) > 1:
+            return "\n  ".join(string_splitted)
+        return string
+
     def read(self, path):
         """PROPERTY read.
 
@@ -299,7 +310,7 @@ class PropertyParser(TextParser):
         """
 
         stream = '\n'.join(
-            '{}={}'.format(item[0], item[1]) for item in data.items(),
+            '{}={}'.format(item[0], self._process_multiline_string(item[1])) for item in data.items(),
         )
         super(PropertyParser, self).write(
             stream.encode(encoding='utf-8'),

@@ -72,3 +72,11 @@ def represent_unicode(dumper, _unicode):  # pylint: disable=unused-argument
     """Function for unicode representation."""
 
     return yaml.ScalarNode(u'tag:yaml.org,2002:str', _unicode)
+
+
+# string representer for multi line issue
+def represent_multi_line(dumper, data):
+    style = None
+    if len(data.splitlines()) > 1:  # check for multi line string
+        style = '|'
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style=style)

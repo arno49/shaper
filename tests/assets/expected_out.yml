@@ -22,6 +22,12 @@ tests:
         filename: /path/example/notrailing
         bool_key_true: 'true'
         bool_key_false: 'false'
+        multilinevalue: |-
+          line1,\
+          line2,\
+          line3
+        valueaftermultiline: valueaftermultiline
+        initialServices+: initial services +
       test_data.xml:
         people:
           person:
@@ -40,3 +46,7 @@ tests:
             title: Cook
           - name: Squidward
             title: Cashier
+            multiline: |-
+              line1,
+              line2,
+              line3
