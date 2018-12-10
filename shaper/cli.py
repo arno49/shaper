@@ -123,7 +123,7 @@ def main():
         template_dir = os.path.dirname(arguments.src_path)
 
         rendered_templates = [
-            render_template(template, context) for template in templates
+            render_template(os.path.join(template_dir, template), context) for template in templates
         ]
 
         merge_templates(rendered_templates, template_dir)

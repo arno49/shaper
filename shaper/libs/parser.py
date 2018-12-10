@@ -46,7 +46,7 @@ from .loader import (
 
 
 class BaseParser(object):
-    WARNING_MESSAGE = 'Warning. Unsupported file extension for {file}'
+    WARNING_MESSAGE = 'Warning. Unsupported file extension for {file}\n'
 
     @staticmethod
     def parsers_choice(filepath):
@@ -80,7 +80,7 @@ class BaseParser(object):
             except Exception as exc:
                 msg = 'Failed to parse {file}'.format(file=os.path.abspath(path))
                 sys.stderr.write(
-                    '{message}\n{exception}'.format(message=msg, exception=exc),
+                    '{message}\n{exception}\n'.format(message=msg, exception=exc),
                 )
 
         sys.stderr.write(self.WARNING_MESSAGE.format(file=path))
