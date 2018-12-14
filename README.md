@@ -22,8 +22,10 @@ Install via [pypi](https://pypi.org/project/shaper/):
 pip install shaper
 ```
 
+
 ### Use cases
 Aim of shaper - make configuration management easier with templating, DSL and CMDBs.
+
 
 #### Step 1 - Convert existing project configurations to DSL
 
@@ -31,10 +33,12 @@ Aim of shaper - make configuration management easier with templating, DSL and CM
 cd myproject
 shaper read
 ```
+
 We will get `out.yml` file with DSL of our project configuration
 
 <details><summary>out.yml</summary>
 <p>
+
 ```python
 my-backend:
   src:
