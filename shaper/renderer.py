@@ -7,6 +7,7 @@ import os
 import yaml
 
 from jinja2 import Environment, FileSystemLoader, Undefined
+from . import manager
 
 
 class IgnoreUndefinedAttr(Undefined):  # pylint: disable=too-few-public-methods
@@ -49,13 +50,13 @@ def render_template(template_path, context):
     return template.render()
 
 
-def merge_templates(rendered_templates, template_dir):
+def merge_templates(rendered_templates, out_dir):
     """
     Merge templates
 
     :param rendered_templates: list of rendered templates to merge
 
-    :param template_dir: path to rendered templates
+    :param out_dir: path to rendered templates
 
     :return: None
     """
@@ -63,5 +64,6 @@ def merge_templates(rendered_templates, template_dir):
     for var in rendered_templates:
         dict_base.update(yaml.safe_load(var))
 
-    with open(os.path.join(template_dir, 'templates.yaml'), 'w') as _fd:
+    manager.create_folders(out_dir)
+    with open(os.path.join(out_dir, 'templates.yaml'), 'w') as _fd:
         yaml.dump(dict_base, _fd, default_flow_style=False)
