@@ -41,6 +41,7 @@ setup(
     include_package_data=True,
     description='Manage application options',
     long_description=description,
+    long_description_content_type="text/markdown",
     url='https://github.com/arno49/shaper/wiki',
     author='Ivan Bogomazov',
     author_email='ivan.bogomazov@gmail.com',
