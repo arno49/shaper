@@ -29,6 +29,9 @@ with open(os.path.join(PROJECT_DIR, 'requirements/test')) as req_fd:
 with open(os.path.join(PROJECT_DIR, 'requirements/debug')) as req_fd:
     debug_requires = req_fd.readlines()
 
+with open(os.path.join(PROJECT_DIR, 'README.md')) as readme:
+    long_description = readme.readlines()
+
 
 dev_requires = test_requires + debug_requires
 
@@ -40,8 +43,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     description='Manage application options',
-    long_description=description,
-    long_description_content_type="text/markdown",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/arno49/shaper/wiki',
     author='Ivan Bogomazov',
     author_email='ivan.bogomazov@gmail.com',
