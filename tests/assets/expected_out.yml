@@ -28,15 +28,39 @@ tests:
           line3
         valueaftermultiline: valueaftermultiline
         initialServices+: initial services +
-      test_data.xml:
-        people:
-          person:
-          - name: Mr. Krabs
-            title: Founder
-          - name: SpongeBob
-            title: Cook
-          - name: Squidward
-            title: Cashier
+      test_data.txt: |-
+        It's some text, it may include html, e.g.
+        <html>
+          <head></head>
+        </html>
+        
+        Or json:
+        {
+          "products" : [{
+            "price": "20",
+            "title": "Macadamia oil"
+          }]
+        }
+        
+        Or anything else.
+      test_data.xml: |-
+        <?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <ns2:getResponse xmlns:ns2="http://some.service.com/">
+              <return>
+                <brand>Unknown Brand</brand>
+                <id>8158686</id>
+                <marketingName highlighted="Logic">The Logic is cool &amp; powerful</marketingRangeName>
+                <locales target="option">
+                  <locale name="ru_RU"><![CDATA[test]]></locale>
+                  <locale name="fr_FR"><![CDATA[test2]]></locale>
+                  <locale name="en_US"><![CDATA[test3]]></locale>
+                </locales>
+              </return>
+            </ns2:getResponse>
+          </soap:Body>
+        </soap:Envelope>
       test_data.yml:
         people:
           person:

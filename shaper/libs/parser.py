@@ -134,6 +134,9 @@ class TextParser(object):
         :rtype: None
         """
 
+        if isinstance(data, str):
+            data = bytearray(data, 'utf-8')
+
         try:
             with open(path, 'wb') as fd:
                 fd.write(data)
@@ -327,7 +330,7 @@ PARSERS_MAPPING = {
     '.json': JSONParser,
     '.yml': YAMLParser,
     '.yaml': YAMLParser,
-    '.xml': XMLParser,
+    '.xml': TextParser,
     '.properties': PropertyParser,
     '.txt': TextParser,
     # '': TextParser, TODO: think about how to parse files without extension

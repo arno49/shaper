@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<people>
-	<person>
-		<name>Mr. Krabs</name>
-		<title>Founder</title>
-	</person>
-	<person>
-		<name>SpongeBob</name>
-		<title>Cook</title>
-	</person>
-	<person>
-		<name>Squidward</name>
-		<title>Cashier</title>
-	</person>
-</people>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <ns2:getResponse xmlns:ns2="http://some.service.com/">
+      <return>
+        <brand>Unknown Brand</brand>
+        <id>8158686</id>
+        <marketingName highlighted="Logic">The Logic is cool &amp; powerful</marketingRangeName>
+        <locales target="option">
+          <locale name="ru_RU"><![CDATA[test]]></locale>
+          <locale name="fr_FR"><![CDATA[test2]]></locale>
+          <locale name="en_US"><![CDATA[test3]]></locale>
+        </locales>
+      </return>
+    </ns2:getResponse>
+  </soap:Body>
+</soap:Envelope>

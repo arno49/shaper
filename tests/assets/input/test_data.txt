@@ -1,0 +1,14 @@
+It's some text, it may include html, e.g.
+<html>
+  <head></head>
+</html>
+
+Or json:
+{
+  "products" : [{
+    "price": "20",
+    "title": "Macadamia oil"
+  }]
+}
+
+Or anything else.
