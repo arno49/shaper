@@ -26,14 +26,8 @@ with open(os.path.join(PROJECT_DIR, 'requirements/test')) as req_fd:
     test_requires = req_fd.readlines()
 
 
-with open(os.path.join(PROJECT_DIR, 'requirements/debug')) as req_fd:
-    debug_requires = req_fd.readlines()
-
 with open(os.path.join(PROJECT_DIR, 'README.md')) as readme:
     long_description = readme.readlines()
-
-
-dev_requires = test_requires + debug_requires
 
 
 setup(
