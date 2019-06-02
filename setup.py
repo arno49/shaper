@@ -59,6 +59,6 @@ setup(
     },
     extras_require={
         'test': test_requires,
-        'dev': dev_requires
+        'dev': test_requires
     }
 )
