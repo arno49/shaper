@@ -15,15 +15,15 @@ with open(os.path.join(PROJECT_DIR, 'README.md')) as readme:
 
 
 with open(os.path.join(PROJECT_DIR, 'requirements/base')) as req_fd:
-    install_requires = req_fd.readlines()
+    install_requires = req_fd.read()
 
 if (sys.version_info > (3, 0)):
     with open(os.path.join(PROJECT_DIR, 'requirements/python3')) as req_fd:
-        install_requires += req_fd.readlines()
+        install_requires += req_fd.read()
 
 
 with open(os.path.join(PROJECT_DIR, 'requirements/test')) as req_fd:
-    test_requires = req_fd.readlines()
+    test_requires = req_fd.read()
 
 
 with open(os.path.join(PROJECT_DIR, 'README.md')) as readme:
