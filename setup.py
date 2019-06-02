@@ -27,7 +27,7 @@ with open(os.path.join(PROJECT_DIR, 'requirements/test')) as req_fd:
 
 
 with open(os.path.join(PROJECT_DIR, 'README.md')) as readme:
-    long_description = readme.readlines()
+    long_description = readme.read()
 
 
 setup(
@@ -58,7 +58,6 @@ setup(
         ]
     },
     extras_require={
-        'test': test_requires,
-        'dev': test_requires
+        'test': test_requires
     }
 )
